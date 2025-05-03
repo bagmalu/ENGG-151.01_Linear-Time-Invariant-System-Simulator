@@ -1,0 +1,7 @@
+typed one by one into the console
+
+0.0000000000000000
+0.0980171403295606
+0.1950903220161280
+
+next 3 values should be extracted from test.txt

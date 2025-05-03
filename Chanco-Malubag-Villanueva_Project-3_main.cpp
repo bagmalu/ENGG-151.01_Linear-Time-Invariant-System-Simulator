@@ -35,13 +35,15 @@ int main(int argc, char *argv[])
   //program loop
   string userInput, command, filename;
   double next_input;
-  int sizea, sizeb, nSamples;
-  double * acoef = new double[sizea];
-  double * bcoef = new double[sizeb];
-  double * inputs = new double[nSamples];
-  double * outputs = new double[nSamples];
-  double * input_samples = new double[nSamples];
-  double * output_samples = new double[nSamples];
+
+  //just made these based on void in function.cpp
+  // int sizea, sizeb, nSamples;
+  // double * acoef = new double[sizea];
+  // double * bcoef = new double[sizeb];
+  // double * inputs = new double[nSamples];
+  // double * outputs = new double[nSamples];
+  // double * input_samples = new double[nSamples];
+  // double * output_samples = new double[nSamples];
 
   while(1)
   {
@@ -63,11 +65,13 @@ int main(int argc, char *argv[])
     {
       if(ss.eof())
       {
-        cout << "\n*number is treated as next input to the system*\n";
-          //next output is computed
-          //cout << output << endl;
-          //logfile << "next_input \toutput" << endl;
-          //cout << "ERROR: No LTI system has been defined yet." << endl;
+        //number is treated as next input to the system
+        //next output is computed
+
+        cout << "output" << endl;
+        logfile << "input \toutput" << endl;
+
+        //cout << "ERROR: No LTI system has been defined yet." << endl;
       }
       else
         cout << "\nERROR: Floating point number contains extra characters.\n";
@@ -93,13 +97,8 @@ int main(int argc, char *argv[])
         }
         else if(command == "system")
         {
-          cout << "\n*extract coefficients from filename*\n";
-          //extract function
-          //logfile << "new system" << endl;
-          //for each component: logfile << components << endl;
-          //logfile << "ready" << endl;
-          //clear initial conditions to 0.0
-
+          //extract coefficients from filename
+          
           if(!(ss >> filename)) 
             cout << "\nERROR: No filename has been specified.\n"; 
           else
@@ -110,6 +109,13 @@ int main(int argc, char *argv[])
             if(!systemFile.is_open() || !systemFile.good()) 
               cout << "\nERROR: File \"" << filename << "\" cannot be accessed.\n";
           }
+
+          //if new lti system is valid
+          logfile << "new system" << endl;
+
+          //for each component: logfile << components << endl;
+          //logfile << "ready" << endl;
+          //clear initial conditions to 0.0
         }
         else if(command == "signal")
         {
@@ -137,13 +143,14 @@ int main(int argc, char *argv[])
           //restarts simulation
           //does NOT clear the screen
 
-          delete[] acoef;
-          delete[] bcoef;
-          delete[] inputs;
-          delete[] outputs;
-          delete[] input_samples;
-          delete[] output_samples;
-          sizea = sizeb = nSamples = 0;
+          //idk if this syntax is allowed
+          // delete[] acoef;
+          // delete[] bcoef;
+          // delete[] inputs;
+          // delete[] outputs;
+          // delete[] input_samples;
+          // delete[] output_samples;
+          // sizea = sizeb = nSamples = 0;
 
           logfile << "cleared" << endl;
           cout << "\nAll memory has been cleared.\n";

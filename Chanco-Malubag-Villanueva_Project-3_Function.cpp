@@ -23,3 +23,60 @@ void compute_outputs(double * acoef, double * bcoef,
   
 }
 
+double * extractSystem(string filename)
+{
+  ifstream f(filename);
+
+  if(f.good() && f.is_open())
+  {
+    string line;
+    stringstream s;
+    vector<double> v;
+    double num;
+    int duration;
+    int nNonRecursiveCoefs = 0;
+    int nRecursiveCoefs = 0;
+
+    while(getline(f,line))
+    {
+      s << line;
+
+      s >> nNonRecursiveCoefs;
+      s >> nRecursiveCoefs;
+
+      while(s >> num) v.push_back(num);
+
+      s.clear();
+      num = 0.0;
+      line.clear();
+    }
+
+    double * acoef = new double[nNonRecursiveCoefs];
+    double * bcoef = new double[nRecursiveCoefs];
+
+    if(v.size() !=0)
+    {
+      int j = 0;
+
+      double * inputs = new double[duration];
+
+      for(int i=0; i<duration; i++)
+      {
+        inputs[i] = v[j];
+        j++;
+      }
+
+      return inputs;
+    }
+    else
+    {
+      cout << "\nERROR: File \"" << filename << "\" is empty.\n";
+      return NULL;
+    }
+  }
+  else
+  {
+    cout << "\nERROR: File \"" << filename << "\" cannot be accessed.\n";
+    return NULL;
+  }
+}
