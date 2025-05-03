@@ -23,7 +23,7 @@ void compute_outputs(double * acoef, double * bcoef,
   
 }
 
-double * extractSystem (string filename, int &duration)
+double * extractSystem (string filename, int &nNonRecursiveCoefs, int &nRecursiveCoefs, double * &acoef, double * &bcoef)
 {
   ifstream f(filename);
 
@@ -34,85 +34,55 @@ double * extractSystem (string filename, int &duration)
 
     vector<double> v;
 
-    double number;
-    double * system;
+    double coef;
 
-    bool firstLine = true;
-    bool secondLine = false;
+    nNonRecursiveCoefs = 0;
+    nRecursiveCoefs = 0;
 
-    duration = 0;
-    int nNonRecursiveCoefs = 0;
-    int nRecursiveCoefs = 0;
+    //first line
+    if(getline(f,line))
+    {
+      stringstream s(line);
+      s >> nNonRecursiveCoefs;
+    }
 
-    cout << "\n" << filename << " accessed!\n";
+    //second line
+    if(getline(f,line))
+    {
+      stringstream s(line);
+      s >> nRecursiveCoefs;
+    }
 
     while(getline(f,line))
     {
-      s << line;
-
-      if(firstLine)
-      {
-        s >> nNonRecursiveCoefs;
-        cout << nNonRecursiveCoefs << endl;
-
-        int M = nNonRecursiveCoefs - 1;
-
-        secondLine = true;
-      }
-      if(secondLine)
-      {
-        firstLine = false;
-        
-        s >> nRecursiveCoefs;
-        cout << nRecursiveCoefs << endl; 
-
-        int N = nRecursiveCoefs;
-      }
-      else
-      {
-        duration++;
-
-        while(s >> number)
-        {
-          cout << number << endl;
-
-          v.push_back(number);
-        }
-
-        s.clear();
-      }
-
-      //reset all
-      s.clear();
-      number = 0;
-      line.clear();
-      secondLine = false;
+      stringstream s(line);
+      while(s >> coef)
+        v.push_back(coef);
     }
 
     //putting into array
-    if(v.size() !=0)
+    if(v.size() != 0)
     {
-      int j = 0;
+      acoef = new double[nRecursiveCoefs];
+      bcoef = new double[nNonRecursiveCoefs];
 
-      system = new double [duration];
+      for(int i=0; i<nNonRecursiveCoefs; i++)
+        bcoef[i] = v[i];
 
-      for(int i=0; i<duration; i++)
-      {
-        system[i] = v[j];
-        j++;
-      }
-
-      return system;
+      for(int i=0; i<nRecursiveCoefs; i++)
+        acoef[i] = v[nNonRecursiveCoefs+i];
+      
+      return NULL;;
     }
     else
     {
-      cout << "\n" << filename << " is empty" << endl;
+      cout << "\nERROR: \"" << filename << "\" is empty\n";
       return NULL;
     }
   }
   else
   {
-    cout << "\nERROR: File \"" << filename << "\" cannot be accessed.\n";
+    cout << "\nERROR: \"" << filename << "\" cannot be accessed.\n";
     return NULL;
   }
 }

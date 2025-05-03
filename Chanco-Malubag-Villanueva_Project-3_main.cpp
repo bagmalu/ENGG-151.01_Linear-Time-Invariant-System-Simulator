@@ -37,9 +37,10 @@ int main(int argc, char *argv[])
   double next_input;
 
   //just made these based on void in function.cpp
-  // int sizea, sizeb, nSamples;
-  // double * acoef = new double[sizea];
-  // double * bcoef = new double[sizeb];
+  int n; //placeholder
+  int nNonRecursiveCoefs, nRecursiveCoefs;
+  double * acoef = new double[n];
+  double * bcoef = new double[n];
   // double * inputs = new double[nSamples];
   // double * outputs = new double[nSamples];
   // double * input_samples = new double[nSamples];
@@ -103,22 +104,26 @@ int main(int argc, char *argv[])
             cout << "\nERROR: No filename has been specified.\n"; 
           else
           {
-            ifstream systemFile;
-            systemFile.open(filename);
+            if(extractSystem (filename, nNonRecursiveCoefs, nRecursiveCoefs, acoef, bcoef) == NULL)
+            {
+              cout << "\nSystem obtained from \"" << filename << "\"."
+                    << " recursive coefs: " << nRecursiveCoefs << ","
+                    << " nonrecursive coefs: " << nNonRecursiveCoefs << endl;
 
-            if(!systemFile.is_open() || !systemFile.good()) 
-              cout << "\nERROR: File \"" << filename << "\" cannot be accessed.\n";
+              logfile << "new system" << endl;
+
+              logfile << nNonRecursiveCoefs << "\n" << nRecursiveCoefs << endl;
+              for(int i=0; i<nNonRecursiveCoefs; i++)
+                logfile << bcoef[i] << endl;
+              for(int i=0; i<nRecursiveCoefs; i++)
+                logfile << acoef[i] << endl;
+
+              logfile << "ready" << endl;
+              //clear initial conditions to 0.0
+            } 
+            else
+              cout << "\nERROR: \"" << filename << "\" is empty\n";
           }
-
-          int duration = 0;
-          double * inputs = extractSystem(filename, duration);
-
-          //if new lti system is valid
-          logfile << "new system" << endl;
-
-          //for each component: logfile << components << endl;
-          //logfile << "ready" << endl;
-          //clear initial conditions to 0.0
         }
         else if(command == "signal")
         {

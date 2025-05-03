@@ -18,6 +18,6 @@ void compute_outputs(double * acoef, double * bcoef,
                      double * input_samples, int nSamples,
                      double ** output_samples);
 
-double * extractSystem(string filename, int &duration);
+double * extractSystem (string filename, int &nNonRecursiveCoefs, int &nRecursiveCoefs, double * &acoef, double * &bcoef);
 
 #endif // FUNCTION_H
