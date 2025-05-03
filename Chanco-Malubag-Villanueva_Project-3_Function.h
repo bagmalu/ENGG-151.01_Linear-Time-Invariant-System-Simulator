@@ -18,4 +18,6 @@ void compute_outputs(double * acoef, double * bcoef,
                      double * input_samples, int nSamples,
                      double ** output_samples);
 
+double * extractSystem(string filename, int &duration);
+
 #endif // FUNCTION_H

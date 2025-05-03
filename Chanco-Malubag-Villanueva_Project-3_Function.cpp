@@ -23,7 +23,7 @@ void compute_outputs(double * acoef, double * bcoef,
   
 }
 
-double * extractSystem(string filename)
+double * extractSystem (string filename, int &duration)
 {
   ifstream f(filename);
 
@@ -31,46 +31,82 @@ double * extractSystem(string filename)
   {
     string line;
     stringstream s;
+
     vector<double> v;
-    double num;
-    int duration;
+
+    double number;
+    double * system;
+
+    bool firstLine = true;
+    bool secondLine = false;
+
+    duration = 0;
     int nNonRecursiveCoefs = 0;
     int nRecursiveCoefs = 0;
+
+    cout << "\n" << filename << " accessed!\n";
 
     while(getline(f,line))
     {
       s << line;
 
-      s >> nNonRecursiveCoefs;
-      s >> nRecursiveCoefs;
+      if(firstLine)
+      {
+        s >> nNonRecursiveCoefs;
+        cout << nNonRecursiveCoefs << endl;
 
-      while(s >> num) v.push_back(num);
+        int M = nNonRecursiveCoefs - 1;
 
+        secondLine = true;
+      }
+      if(secondLine)
+      {
+        firstLine = false;
+        
+        s >> nRecursiveCoefs;
+        cout << nRecursiveCoefs << endl; 
+
+        int N = nRecursiveCoefs;
+      }
+      else
+      {
+        duration++;
+
+        while(s >> number)
+        {
+          cout << number << endl;
+
+          v.push_back(number);
+        }
+
+        s.clear();
+      }
+
+      //reset all
       s.clear();
-      num = 0.0;
+      number = 0;
       line.clear();
+      secondLine = false;
     }
 
-    double * acoef = new double[nNonRecursiveCoefs];
-    double * bcoef = new double[nRecursiveCoefs];
-
+    //putting into array
     if(v.size() !=0)
     {
       int j = 0;
 
-      double * inputs = new double[duration];
+      system = new double [duration];
 
       for(int i=0; i<duration; i++)
       {
-        inputs[i] = v[j];
+        system[i] = v[j];
         j++;
       }
 
-      return inputs;
+      return system;
     }
     else
     {
-      cout << "\nERROR: File \"" << filename << "\" is empty.\n";
+      cout << "\n" << filename << " is empty" << endl;
       return NULL;
     }
   }

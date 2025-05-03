@@ -98,7 +98,7 @@ int main(int argc, char *argv[])
         else if(command == "system")
         {
           //extract coefficients from filename
-          
+
           if(!(ss >> filename)) 
             cout << "\nERROR: No filename has been specified.\n"; 
           else
@@ -109,6 +109,9 @@ int main(int argc, char *argv[])
             if(!systemFile.is_open() || !systemFile.good()) 
               cout << "\nERROR: File \"" << filename << "\" cannot be accessed.\n";
           }
+
+          int duration = 0;
+          double * inputs = extractSystem(filename, duration);
 
           //if new lti system is valid
           logfile << "new system" << endl;
