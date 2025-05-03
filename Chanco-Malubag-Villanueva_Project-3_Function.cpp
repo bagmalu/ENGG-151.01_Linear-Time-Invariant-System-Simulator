@@ -13,6 +13,8 @@
 
 #include "Chanco-Malubag-Villanueva_Project-3_Function.h"
 
+using namespace std;
+
 void compute_outputs(double * acoef, double * bcoef, 
                      double * inputs, double * outputs, int sizea, int sizeb,
                      double * input_samples, int nSamples,
@@ -20,6 +22,4 @@ void compute_outputs(double * acoef, double * bcoef,
 {
   
 }
-
-using namespace std;
 

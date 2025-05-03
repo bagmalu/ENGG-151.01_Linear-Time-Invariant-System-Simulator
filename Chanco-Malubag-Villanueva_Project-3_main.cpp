@@ -35,6 +35,13 @@ int main(int argc, char *argv[])
   //program loop
   string userInput, command, filename;
   double next_input;
+  int sizea, sizeb, nSamples;
+  double * acoef = new double[sizea];
+  double * bcoef = new double[sizeb];
+  double * inputs = new double[nSamples];
+  double * outputs = new double[nSamples];
+  double * input_samples = new double[nSamples];
+  double * output_samples = new double[nSamples];
 
   while(1)
   {
@@ -126,11 +133,20 @@ int main(int argc, char *argv[])
         }
         else if(command == "clear")
         {
-          cout << "\n*clears all memory*\n";
-          //logfile << "cleared" << endl;
           //clears all inputs and outputs to 0
           //restarts simulation
           //does NOT clear the screen
+
+          delete[] acoef;
+          delete[] bcoef;
+          delete[] inputs;
+          delete[] outputs;
+          delete[] input_samples;
+          delete[] output_samples;
+          sizea = sizeb = nSamples = 0;
+
+          logfile << "cleared" << endl;
+          cout << "\nAll memory has been cleared.\n";
         }
         else if(command == "exit")
         {
