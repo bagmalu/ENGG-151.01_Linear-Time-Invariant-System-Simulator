@@ -34,18 +34,25 @@ int main(int argc, char *argv[])
 
   //program loop
   string userInput, command, filename;
-  double next_input; 
-  string floatExtra;
+  double next_input;
 
   while(1)
   {
+    //prompt for user inputs
     cout << "\nltisim> ";
     getline(cin, userInput);
+
+    //converts all userInput characters to lowercase
     transform(userInput.begin(), userInput.end(), userInput.begin(), ::tolower);
     
     stringstream ss(userInput);
 
-    if(ss >> next_input) //if input is any floating point number
+    //if input is empty
+    if(userInput.empty())
+      cout << "\nERROR: No command has been specified.\n";
+
+    //if input is any floating point number
+    else if(ss >> next_input) 
     {
       if(ss.eof())
       {
@@ -57,20 +64,26 @@ int main(int argc, char *argv[])
       }
       else
         cout << "\nERROR: Floating point number contains extra characters.\n";
-    } 
+    }
 
+    //if input is any string
     else
     {
       ss.clear();
       ss.str(userInput);
 
-      if(ss >> command) //if input is any string
+      if(ss >> command) 
       {
         if(command == "help")
         {
-          cout << "\n*insert program instructions here*\n";
+          cout << "\nCommands:\n"
+               << "  help               - displays this message\n"
+               << "  system <filename>  - extracts input coefficients from a file \n"
+               << "  <number>           - inputs number to the system\n"
+               << "  signal <filename>  - extracts an input signal from a file\n"
+               << "  clear              - clears all memory and restarts simulation\n"  
+               << "  exit               - terminates the program\n";
         }
-
         else if(command == "system")
         {
           cout << "\n*extract coefficients from filename*\n";
@@ -91,7 +104,6 @@ int main(int argc, char *argv[])
               cout << "\nERROR: File \"" << filename << "\" cannot be accessed.\n";
           }
         }
-
         else if(command == "signal")
         {
           cout << "\n*extract signal from filename*\n";
@@ -112,13 +124,19 @@ int main(int argc, char *argv[])
               cout << "\nERROR: File \"" << filename << "\" cannot be accessed.\n";
           }
         }
-        
+        else if(command == "clear")
+        {
+          cout << "\n*clears all memory*\n";
+          //logfile << "cleared" << endl;
+          //clears all inputs and outputs to 0
+          //restarts simulation
+          //does NOT clear the screen
+        }
         else if(command == "exit")
         {
           cout << "\nProgram has been terminated.\n";
           return(0);
         }
-
         else cout << "\nERROR: Command \"" << command << "\" does not exist.\n";
       }
     }
