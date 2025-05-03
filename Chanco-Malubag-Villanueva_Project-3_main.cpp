@@ -9,6 +9,7 @@
 #include <vector>
 #include <sstream>
 #include <cmath>
+#include <algorithm>
 
 #include "Chanco-Malubag-Villanueva_Project-3_Function.h"
 
@@ -34,22 +35,28 @@ int main(int argc, char *argv[])
   //program loop
   string userInput, command, filename;
   double next_input; 
+  string floatExtra;
 
   while(1)
   {
     cout << "\nltisim> ";
     getline(cin, userInput);
+    transform(userInput.begin(), userInput.end(), userInput.begin(), ::tolower);
     
     stringstream ss(userInput);
 
-    //FIX: input validation (it accepts 123.45asdf67 as 123.45)
     if(ss >> next_input) //if input is any floating point number
     {
-      cout << "\nNumber is treated as next input to the system\n";
-      //next output is computed
-      //cout << output << endl;
-      //logfile << "next_input \toutput" << endl;
-      //cout << "ERROR: No LTI system has been defined yet." << endl;
+      if(ss.eof())
+      {
+        cout << "\n*number is treated as next input to the system*\n";
+          //next output is computed
+          //cout << output << endl;
+          //logfile << "next_input \toutput" << endl;
+          //cout << "ERROR: No LTI system has been defined yet." << endl;
+      }
+      else
+        cout << "\nERROR: Floating point number contains extra characters.\n";
     } 
 
     else
@@ -61,52 +68,58 @@ int main(int argc, char *argv[])
       {
         if(command == "help")
         {
-          cout << "\nProgram instructions\n";
+          cout << "\n*insert program instructions here*\n";
         }
 
         else if(command == "system")
         {
-          cout << "\nExtract coefficients from filename\n";
+          cout << "\n*extract coefficients from filename*\n";
           //extract function
           //logfile << "new system" << endl;
           //for each component: logfile << components << endl;
           //logfile << "ready" << endl;
           //clear initial conditions to 0.0
 
-          ss >> filename; 
-          cout << filename << endl;
+          if(!(ss >> filename)) 
+            cout << "\nERROR: No filename has been specified.\n"; 
+          else
+          {
+            ifstream systemFile;
+            systemFile.open(filename);
 
-          ifstream systemFile;
-          systemFile.open(filename);
-
-          if(!systemFile.is_open() || !systemFile.good()) cout << "\nERROR: File \"" << filename << "\" cannot be accessed.\n";
+            if(!systemFile.is_open() || !systemFile.good()) 
+              cout << "\nERROR: File \"" << filename << "\" cannot be accessed.\n";
+          }
         }
 
         else if(command == "signal")
         {
-          cout << "\nExtract signal from filename\n";
+          cout << "\n*extract signal from filename*\n";
           //inputted signal serves as input to LTI system, one sample at a time
           //starting index is ignored
           //logfile << "input \toutput" << endl;
           //if(duration < 10) cout << "input \toutput" << endl;
           //else cout << summary of the number of inputs simulated << endl;
           
-          ss >> filename; 
-          cout << filename << endl;
+          if(!(ss >> filename)) 
+            cout << "\nERROR: No filename has been specified.\n"; 
+          else
+          {
+            ifstream signalFile;
+            signalFile.open(filename);
 
-          ifstream signalFile;
-          signalFile.open(filename);
-
-          if(!signalFile.is_open() || !signalFile.good()) cout << "\nERROR: File \"" << filename << "\" cannot be accessed.\n";
+            if(!signalFile.is_open() || !signalFile.good()) 
+              cout << "\nERROR: File \"" << filename << "\" cannot be accessed.\n";
+          }
         }
         
         else if(command == "exit")
         {
-          cout << "\nProgram is terminated.\n";
+          cout << "\nProgram has been terminated.\n";
           return(0);
         }
 
-        else cout << "\nCommand \"" << command << "\" does not exist.\n";
+        else cout << "\nERROR: Command \"" << command << "\" does not exist.\n";
       }
     }
   }
