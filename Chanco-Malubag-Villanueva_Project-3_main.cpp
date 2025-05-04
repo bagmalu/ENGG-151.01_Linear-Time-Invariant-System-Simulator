@@ -144,7 +144,7 @@ int main(int argc, char *argv[])
 
               outputs = new double[nSamples];
 
-              // compute_outputs(acoef, bcoef, inputs, outputs, nNonRecursiveCoefs, nRecursiveCoefs, inputs, nSamples, outputs);
+              compute_outputs(acoef, bcoef, inputs, outputs, nNonRecursiveCoefs, nRecursiveCoefs, inputs, nSamples, outputs);
 
               if(nSamples < 10)
               {
