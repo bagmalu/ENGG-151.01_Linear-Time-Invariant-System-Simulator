@@ -20,4 +20,6 @@ void compute_outputs(double * acoef, double * bcoef,
 
 double * extractSystem (string filename, int &nNonRecursiveCoefs, int &nRecursiveCoefs, double * &acoef, double * &bcoef);
 
+double * extractSignal (string filename, int &n, int &nSamples, double * &input_samples);
+
 #endif // FUNCTION_H

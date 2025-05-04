@@ -20,7 +20,7 @@ void compute_outputs(double * acoef, double * bcoef,
                      double * input_samples, int nSamples,
                      double ** output_samples)
 {
-  
+  //general input-output relationship for LTI systems formula
 }
 
 double * extractSystem (string filename, int &nNonRecursiveCoefs, int &nRecursiveCoefs, double * &acoef, double * &bcoef)
@@ -30,10 +30,7 @@ double * extractSystem (string filename, int &nNonRecursiveCoefs, int &nRecursiv
   if(f.good() && f.is_open())
   {
     string line;
-    stringstream s;
-
     vector<double> v;
-
     double coef;
 
     nNonRecursiveCoefs = 0;
@@ -71,18 +68,87 @@ double * extractSystem (string filename, int &nNonRecursiveCoefs, int &nRecursiv
 
       for(int i=0; i<nRecursiveCoefs; i++)
         acoef[i] = v[nNonRecursiveCoefs+i];
-      
-      return NULL;;
+
+      return NULL;
     }
     else
     {
       cout << "\nERROR: \"" << filename << "\" is empty\n";
-      return NULL;
+      return nullptr;
     }
   }
   else
   {
     cout << "\nERROR: \"" << filename << "\" cannot be accessed.\n";
-    return NULL;
+    return nullptr;
   }
+}
+
+double * extractSignal (string filename, int &n, int &nSamples, double * &input_samples)
+{
+  ifstream f(filename);
+
+  if(f.good())
+  {
+    string line;
+    vector<double> v;
+    double number;
+
+    nSamples = 0;
+    n = 0;
+
+    if(getline(f,line))
+    {
+      stringstream s(line); 
+
+      if(!(s >> n))
+      {
+        s.clear();
+        s.str(line);
+
+        while(s >> number)
+        {
+          v.push_back(number); 
+          nSamples++;
+        }
+      }
+      else 
+      {
+        while(s >> number)
+        {
+          v.push_back(number); 
+          nSamples++;
+        }
+      }
+    }
+
+    while(getline(f,line))
+    {
+      stringstream s(line); 
+
+      while(s >> number)
+      {
+        v.push_back(number); 
+        nSamples++; 
+      }
+    }
+
+    //putting into array
+    if(v.size() !=0)
+    {
+      input_samples = new double [nSamples];
+
+      for(int i=0; i<nSamples; i++)
+        input_samples[i] = v[i];
+      
+      return NULL;
+    }
+    else
+    {
+      cout << "\nERROR: \"" << filename << "\" is empty" << endl;
+      return nullptr;
+    }
+  }
+  cout << "\nERROR: \"" << filename << "\" not accessible" << endl;
+  return nullptr;
 }

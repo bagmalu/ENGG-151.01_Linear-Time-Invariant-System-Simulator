@@ -36,15 +36,17 @@ int main(int argc, char *argv[])
   string userInput, command, filename;
   double next_input;
 
-  //just made these based on void in function.cpp
-  int n; //placeholder
   int nNonRecursiveCoefs, nRecursiveCoefs;
-  double * acoef = new double[n];
-  double * bcoef = new double[n];
-  // double * inputs = new double[nSamples];
-  // double * outputs = new double[nSamples];
-  // double * input_samples = new double[nSamples];
-  // double * output_samples = new double[nSamples];
+  double * acoef = NULL;
+  double * bcoef = NULL;
+
+  int n = 0;
+  int nSamples = 0;
+  double * inputs = NULL;
+  double * outputs = NULL;
+  
+  // double * input_samples;
+  // double ** output_samples;
 
   while(1)
   {
@@ -66,13 +68,20 @@ int main(int argc, char *argv[])
     {
       if(ss.eof())
       {
-        //number is treated as next input to the system
-        //next output is computed
+        if(acoef == NULL || bcoef == NULL)
+        {
+          cout << "\nERROR: No LTI system has been defined yet.\n";
+        }
+        else
+        {
+          //number is treated as next input to the system
+          // inputs[(nSamples == 0) ? nSamples : nSamples+1] = next_input;
 
-        cout << "output" << endl;
-        logfile << "input \toutput" << endl;
+          //insert compute_outputs() here
 
-        //cout << "ERROR: No LTI system has been defined yet." << endl;
+          // cout << outputs[(nSamples == 0) ? nSamples : nSamples+1] << endl;
+          // logfile << inputs[(nSamples == 0) ? nSamples : nSamples+1] << " \t" << outputs[(nSamples == 0) ? nSamples : nSamples+1] << endl;
+        }
       }
       else
         cout << "\nERROR: Floating point number contains extra characters.\n";
@@ -98,51 +107,60 @@ int main(int argc, char *argv[])
         }
         else if(command == "system")
         {
-          //extract coefficients from filename
-
           if(!(ss >> filename)) 
             cout << "\nERROR: No filename has been specified.\n"; 
           else
           {
             if(extractSystem (filename, nNonRecursiveCoefs, nRecursiveCoefs, acoef, bcoef) == NULL)
             {
-              cout << "\nSystem obtained from \"" << filename << "\"."
-                    << " recursive coefs: " << nRecursiveCoefs << ","
-                    << " nonrecursive coefs: " << nNonRecursiveCoefs << endl;
+              logfile << "\nnew system\n" << endl;
 
-              logfile << "new system" << endl;
-
-              logfile << nNonRecursiveCoefs << "\n" << nRecursiveCoefs << endl;
               for(int i=0; i<nNonRecursiveCoefs; i++)
-                logfile << bcoef[i] << endl;
+                logfile << "b(" << i << ") = " << bcoef[i] << endl;
               for(int i=0; i<nRecursiveCoefs; i++)
-                logfile << acoef[i] << endl;
+                logfile << "a(" << i+1 << ") = " << acoef[i] << endl;
 
-              logfile << "ready" << endl;
+              logfile << "\nready\n";
+
+              cout << "\nSystem obtained from \"" << filename << "\"."
+                   << " recursive coefs: " << nRecursiveCoefs << ","
+                   << " nonrecursive coefs: " << nNonRecursiveCoefs << endl;
+
               //clear initial conditions to 0.0
-            } 
-            else
-              cout << "\nERROR: \"" << filename << "\" is empty\n";
+            }
           }
         }
         else if(command == "signal")
         {
-          cout << "\n*extract signal from filename*\n";
-          //inputted signal serves as input to LTI system, one sample at a time
-          //starting index is ignored
-          //logfile << "input \toutput" << endl;
-          //if(duration < 10) cout << "input \toutput" << endl;
-          //else cout << summary of the number of inputs simulated << endl;
-          
           if(!(ss >> filename)) 
             cout << "\nERROR: No filename has been specified.\n"; 
           else
           {
-            ifstream signalFile;
-            signalFile.open(filename);
+            if(acoef == NULL || bcoef == NULL)
+            {
+              cout << "\nERROR: No LTI system has been defined yet.\n";
+            }
+            else if(extractSignal (filename, n, nSamples, inputs) != NULL)
+            {
+              cout << "\nSignal obtained from \"" << filename << "\"."
+                   << " start index: " << n << ","
+                   << " duration: " << nSamples << endl;
 
-            if(!signalFile.is_open() || !signalFile.good()) 
-              cout << "\nERROR: File \"" << filename << "\" cannot be accessed.\n";
+              //inputted signal serves as input to LTI system, one sample at a time
+              //starting index is ignored
+
+              //insert compute_outputs() here
+
+              if(nSamples > 10)
+              {
+                for(int i=0; i<nSamples; i++)
+                {
+                  cout << inputs[i] << "\t" << endl; // outputs[i] << endl;
+                  logfile << inputs[i] << "\t" << endl; //outputs[i] << endl;
+                }
+              }
+              //else cout & logfile << summary of the number of inputs simulated << endl;
+            }
           }
         }
         else if(command == "clear")
@@ -151,16 +169,18 @@ int main(int argc, char *argv[])
           //restarts simulation
           //does NOT clear the screen
 
-          //idk if this syntax is allowed
-          // delete[] acoef;
-          // delete[] bcoef;
-          // delete[] inputs;
-          // delete[] outputs;
-          // delete[] input_samples;
-          // delete[] output_samples;
-          // sizea = sizeb = nSamples = 0;
+          delete[] acoef;
+          delete[] bcoef;
+          delete[] inputs;
+          delete[] outputs;
 
-          logfile << "cleared" << endl;
+          next_input = 0.0;
+          nNonRecursiveCoefs = 0;
+          nRecursiveCoefs = 0;
+          n = 0;
+          nSamples = 0;
+
+          logfile << "\ncleared\n";
           cout << "\nAll memory has been cleared.\n";
         }
         else if(command == "exit")
