@@ -42,11 +42,11 @@ int main(int argc, char *argv[])
   int nSamples = 0;
   double * inputs = NULL;
   double * outputs = NULL;
-  
-  // double * input_samples;
-  // double ** output_samples;
 
-  while(1)
+  double * input_samples = NULL;
+  double * output_samples = NULL;
+
+  while(true)
   {
     //prompt for user inputs
     cout << "\nltisim> ";
@@ -71,10 +71,10 @@ int main(int argc, char *argv[])
         else
         {
           //number is treated as next input to the system
-          
-          //insert compute_outputs() here
 
-          // cout << inputs[i] << "\t" << outputs[i] << endl;
+          compute_outputs(acoef, bcoef, inputs, outputs, nNonRecursiveCoefs, nRecursiveCoefs, input_samples, 1, output_samples);
+
+          cout << " \t" << output_samples[0] << endl;
           // logfile << inputs[i] << "\t" << outputs[i] << endl;
         }
       }
@@ -118,8 +118,16 @@ int main(int argc, char *argv[])
               cout << "\nSystem obtained from \"" << filename << "\"."
                    << " recursive coefs: " << nRecursiveCoefs << ","
                    << " nonrecursive coefs: " << nNonRecursiveCoefs << endl;
+              
+              delete[] inputs;
+              delete[] outputs;
+              delete[] input_samples;
+              delete[] output_samples;
 
-              //clear initial conditions to 0.0
+              inputs = new double[nNonRecursiveCoefs];
+              outputs = new double[nRecursiveCoefs];
+              input_samples = new double[nSamples];
+              output_samples = new double[nSamples];
             }
           }
         }
@@ -133,24 +141,19 @@ int main(int argc, char *argv[])
             {
               cout << "\nERROR: No LTI system has been defined yet.\n";
             }
-            else if(extractSignal (filename, n, nSamples, inputs) != NULL)
+            else if(extractSignal (filename, n, nSamples, input_samples) != NULL)
             {
               cout << "\nSignal obtained from \"" << filename << "\"."
                    << " start index: " << n << ","
                    << " duration: " << nSamples << endl;
 
-              //inputted signal serves as input to LTI system, one sample at a time
-              //starting index is ignored
-
-              outputs = new double[nSamples];
-
-              compute_outputs(acoef, bcoef, inputs, outputs, nNonRecursiveCoefs, nRecursiveCoefs, inputs, nSamples, outputs);
+              compute_outputs(acoef, bcoef, inputs, outputs, nNonRecursiveCoefs, nRecursiveCoefs, input_samples, nSamples, output_samples);
 
               if(nSamples < 10)
               {
                 for(int i=0; i<nSamples; i++)
                 {
-                  cout << inputs[i] << "\t" << outputs[i] << endl;
+                  cout << input_samples[i] << "\t" << output_samples[i] << endl;
                   // logfile << inputs[i] << "\t" << outputs[i] << endl;
                 }
               }
@@ -160,14 +163,12 @@ int main(int argc, char *argv[])
         }
         else if(command == "clear")
         {
-          //clears all inputs and outputs to 0
-          //restarts simulation
-          //does NOT clear the screen
-
           delete[] acoef;
           delete[] bcoef;
           delete[] inputs;
           delete[] outputs;
+          delete[] input_samples;
+          delete[] output_samples;
 
           next_input = 0.0;
           nNonRecursiveCoefs = 0;

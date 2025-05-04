@@ -20,23 +20,29 @@ void compute_outputs(double * acoef, double * bcoef,
                      double * input_samples, int nSamples,
                      double * output_samples)
 {
-  //general input-output relationship for LTI systems formula
   for(int n=0; n<nSamples; n++)
   {
+    for(int i=sizeb-1; i>0; i--)
+      inputs[i] = inputs[i-1];
+    inputs[0] = input_samples[n]; 
+
     double yn = 0.0;
 
     for(int i=0; i<sizeb; i++)
     {
-      if(n-i >= 0)
+      if (n-i >= 0)
         yn += bcoef[i] * input_samples[n-i];
     }
 
-
-    for(int j=1; j<=sizea; j++)
+    for(int i=1; i<=sizea; i++)
     {
-      if(n-j >= 0)
-        yn -= acoef[j-1] * output_samples[n-j];
+      if (n-i >= 0)
+        yn -= acoef[i-1] * output_samples[n-i];
     }
+
+    for(int i=sizea-1; i>0; i--)
+      outputs[i] = outputs[i-1];
+    outputs[0] = yn;
 
     output_samples[n] = yn;
   }
