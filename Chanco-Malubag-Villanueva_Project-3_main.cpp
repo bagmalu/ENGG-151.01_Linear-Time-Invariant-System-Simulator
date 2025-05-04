@@ -75,12 +75,11 @@ int main(int argc, char *argv[])
         else
         {
           //number is treated as next input to the system
-          // inputs[(nSamples == 0) ? nSamples : nSamples+1] = next_input;
-
+          
           //insert compute_outputs() here
 
-          // cout << outputs[(nSamples == 0) ? nSamples : nSamples+1] << endl;
-          // logfile << inputs[(nSamples == 0) ? nSamples : nSamples+1] << " \t" << outputs[(nSamples == 0) ? nSamples : nSamples+1] << endl;
+          // cout << inputs[i] << "\t" << outputs[i] << endl;
+          // logfile << inputs[i] << "\t" << outputs[i] << endl;
         }
       }
       else
@@ -114,12 +113,10 @@ int main(int argc, char *argv[])
             if(extractSystem (filename, nNonRecursiveCoefs, nRecursiveCoefs, acoef, bcoef) == NULL)
             {
               logfile << "\nnew system\n" << endl;
-
               for(int i=0; i<nNonRecursiveCoefs; i++)
                 logfile << "b(" << i << ") = " << bcoef[i] << endl;
               for(int i=0; i<nRecursiveCoefs; i++)
                 logfile << "a(" << i+1 << ") = " << acoef[i] << endl;
-
               logfile << "\nready\n";
 
               cout << "\nSystem obtained from \"" << filename << "\"."
@@ -149,14 +146,14 @@ int main(int argc, char *argv[])
               //inputted signal serves as input to LTI system, one sample at a time
               //starting index is ignored
 
-              //insert compute_outputs() here
+              compute_outputs(acoef, bcoef, inputs, outputs, nNonRecursiveCoefs, nRecursiveCoefs, inputs, nSamples, outputs);
 
               if(nSamples > 10)
               {
                 for(int i=0; i<nSamples; i++)
                 {
-                  cout << inputs[i] << "\t" << endl; // outputs[i] << endl;
-                  logfile << inputs[i] << "\t" << endl; //outputs[i] << endl;
+                  cout << inputs[i] << "\t" << outputs[i] << endl;
+                  logfile << inputs[i] << "\t" << outputs[i] << endl;
                 }
               }
               //else cout & logfile << summary of the number of inputs simulated << endl;
