@@ -72,9 +72,9 @@ int main(int argc, char *argv[])
         {
           //number is treated as next input to the system
 
-          compute_outputs(acoef, bcoef, inputs, outputs, nNonRecursiveCoefs, nRecursiveCoefs, input_samples, 1, output_samples);
+          compute_outputs(acoef, bcoef, inputs, outputs, nNonRecursiveCoefs, nRecursiveCoefs, input_samples, nSamples, output_samples);
 
-          cout << " \t" << output_samples[0] << endl;
+          cout << " \t" << output_samples[nSamples-1] << endl;
           // logfile << inputs[i] << "\t" << outputs[i] << endl;
         }
       }
