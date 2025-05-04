@@ -20,17 +20,15 @@ int main(int argc, char *argv[])
   cout << "\nLinear Time-Invariant System Simulator"
        << "\nType \"help\" for more information." << endl;
 
-  //log file, append mode
-  ofstream logfile;
-  logfile.open("ltisim-log.txt", ios::app);
+  // //log file, append mode
+  // ofstream logfile;
+  // logfile.open("ltisim-log.txt", ios::app);
 
-  if(!logfile) //file does not exist
-    logfile.open("ltisim-log.txt");
+  // if(!logfile) //file does not exist
+  //   logfile.open("ltisim-log.txt");
     
-  if(!logfile.is_open()) //file cannot be opened
-    cout << "ERROR: Unable to open ltisim-log.txt for appending." << endl;
-
-  //if need to append smtg, use: logfile << entry << endl; (parang cout lang)
+  // if(!logfile.is_open()) //file cannot be opened
+  //   cout << "ERROR: Unable to open ltisim-log.txt for appending." << endl;
 
   //program loop
   string userInput, command, filename;
@@ -53,8 +51,6 @@ int main(int argc, char *argv[])
     //prompt for user inputs
     cout << "\nltisim> ";
     getline(cin, userInput);
-
-    //converts all userInput characters to lowercase
     transform(userInput.begin(), userInput.end(), userInput.begin(), ::tolower);
     
     stringstream ss(userInput);
@@ -112,12 +108,12 @@ int main(int argc, char *argv[])
           {
             if(extractSystem (filename, nNonRecursiveCoefs, nRecursiveCoefs, acoef, bcoef) == NULL)
             {
-              logfile << "\nnew system\n" << endl;
-              for(int i=0; i<nNonRecursiveCoefs; i++)
-                logfile << "b(" << i << ") = " << bcoef[i] << endl;
-              for(int i=0; i<nRecursiveCoefs; i++)
-                logfile << "a(" << i+1 << ") = " << acoef[i] << endl;
-              logfile << "\nready\n";
+              // logfile << "\nnew system\n" << endl;
+              // for(int i=0; i<nNonRecursiveCoefs; i++)
+              //   logfile << "b(" << i << ") = " << bcoef[i] << endl;
+              // for(int i=0; i<nRecursiveCoefs; i++)
+              //   logfile << "a(" << i+1 << ") = " << acoef[i] << endl;
+              // logfile << "\nready\n";
 
               cout << "\nSystem obtained from \"" << filename << "\"."
                    << " recursive coefs: " << nRecursiveCoefs << ","
@@ -146,14 +142,16 @@ int main(int argc, char *argv[])
               //inputted signal serves as input to LTI system, one sample at a time
               //starting index is ignored
 
-              compute_outputs(acoef, bcoef, inputs, outputs, nNonRecursiveCoefs, nRecursiveCoefs, inputs, nSamples, outputs);
+              outputs = new double[nSamples];
 
-              if(nSamples > 10)
+              // compute_outputs(acoef, bcoef, inputs, outputs, nNonRecursiveCoefs, nRecursiveCoefs, inputs, nSamples, outputs);
+
+              if(nSamples < 10)
               {
                 for(int i=0; i<nSamples; i++)
                 {
                   cout << inputs[i] << "\t" << outputs[i] << endl;
-                  logfile << inputs[i] << "\t" << outputs[i] << endl;
+                  // logfile << inputs[i] << "\t" << outputs[i] << endl;
                 }
               }
               //else cout & logfile << summary of the number of inputs simulated << endl;
@@ -177,7 +175,7 @@ int main(int argc, char *argv[])
           n = 0;
           nSamples = 0;
 
-          logfile << "\ncleared\n";
+          // logfile << "\ncleared\n";
           cout << "\nAll memory has been cleared.\n";
         }
         else if(command == "exit")

@@ -160,14 +160,14 @@ double * extractSignal (string filename, int &n, int &nSamples, double * &input_
       for(int i=0; i<nSamples; i++)
         input_samples[i] = v[i];
       
-      return NULL;
+      return input_samples;
     }
     else
     {
       cout << "\nERROR: \"" << filename << "\" is empty" << endl;
-      return nullptr;
+      return NULL;
     }
   }
   cout << "\nERROR: \"" << filename << "\" not accessible" << endl;
-  return nullptr;
+  return NULL;
 }
