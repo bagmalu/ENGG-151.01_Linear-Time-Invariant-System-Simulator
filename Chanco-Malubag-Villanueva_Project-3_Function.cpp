@@ -15,44 +15,47 @@
 
 using namespace std;
 
-void compute_outputs(double * acoef, double * bcoef, 
-                     double * inputs, double * outputs, int sizea, int sizeb,
-                     double * input_samples, int nSamples,
-                     double * output_samples)
+void compute_outputs(double* acoef, double* bcoef, double* inputs, double* outputs,
+                     int nRecursiveCoefs, int nNonRecursiveCoefs,
+                     double* input_samples, int nSamples, double* output_samples)
 {
-  for(int n=0; n<nSamples; n++)
-  {
-    for(int i=sizeb-1; i>0; i--)
-      inputs[i] = inputs[i-1];
-    inputs[0] = input_samples[n]; 
-
-    double yn = 0.0;
-
-    for(int i=0; i<sizeb; i++)
-    {
-      if (n-i >= 0)
-        yn += bcoef[i] * input_samples[n-i];
+    // Initialize inputs and outputs to zero
+    for (int i = 0; i < nNonRecursiveCoefs; i++) {
+        inputs[i] = 0.0;
     }
-
-    for(int i=1; i<=sizea; i++)
-    {
-      if (n-i >= 0)
-        yn -= acoef[i-1] * output_samples[n-i];
+    for (int i = 0; i < nRecursiveCoefs; i++) {
+        outputs[i] = 0.0;
     }
+    // Compute outputs for each sample
+    for (int n = 0; n < nSamples; n++) {
+        // Shift inputs
+        for (int i = nNonRecursiveCoefs - 1; i > 0; i--) {
+            inputs[i] = inputs[i - 1];
+        }
+        inputs[0] = input_samples[n];
 
-    for(int i=sizea-1; i>0; i--)
-      outputs[i] = outputs[i-1];
-    outputs[0] = yn;
+        // Compute current output
+        output_samples[n] = 0.0;
+        for (int i = 0; i < nNonRecursiveCoefs; i++) {
+            output_samples[n] += bcoef[i] * inputs[i];
+        }
+        for (int i = 0; i < nRecursiveCoefs; i++) {
+            output_samples[n] -= acoef[i] * outputs[i];
+        }
 
-    output_samples[n] = yn;
-  }
+        // Shift outputs
+        for (int i = nRecursiveCoefs - 1; i > 0; i--) {
+            outputs[i] = outputs[i - 1];
+        }
+        outputs[0] = output_samples[n];
+    }
 }
 
-double * extractSystem (string filename, int &nNonRecursiveCoefs, int &nRecursiveCoefs, double * &acoef, double * &bcoef)
+double *extractSystem(string filename, int &nNonRecursiveCoefs, int &nRecursiveCoefs, double *&acoef, double *&bcoef)
 {
   ifstream f(filename);
 
-  if(f.good() && f.is_open())
+  if (f.good() && f.is_open())
   {
     string line;
     vector<double> v;
@@ -61,38 +64,35 @@ double * extractSystem (string filename, int &nNonRecursiveCoefs, int &nRecursiv
     nNonRecursiveCoefs = 0;
     nRecursiveCoefs = 0;
 
-    //first line
-    if(getline(f,line))
+    if (getline(f, line))
     {
       stringstream s(line);
       s >> nNonRecursiveCoefs;
     }
 
-    //second line
-    if(getline(f,line))
+    if (getline(f, line))
     {
       stringstream s(line);
       s >> nRecursiveCoefs;
     }
 
-    while(getline(f,line))
+    while (getline(f, line))
     {
       stringstream s(line);
-      while(s >> coef)
+      while (s >> coef)
         v.push_back(coef);
     }
 
-    //putting into array
-    if(v.size() != 0)
+    if (v.size() != 0)
     {
       acoef = new double[nRecursiveCoefs];
       bcoef = new double[nNonRecursiveCoefs];
 
-      for(int i=0; i<nNonRecursiveCoefs; i++)
+      for (int i = 0; i < nNonRecursiveCoefs; i++)
         bcoef[i] = v[i];
 
-      for(int i=0; i<nRecursiveCoefs; i++)
-        acoef[i] = v[nNonRecursiveCoefs+i];
+      for (int i = 0; i < nRecursiveCoefs; i++)
+        acoef[i] = v[nNonRecursiveCoefs + i];
 
       return NULL;
     }
@@ -109,11 +109,11 @@ double * extractSystem (string filename, int &nNonRecursiveCoefs, int &nRecursiv
   }
 }
 
-double * extractSignal (string filename, int &n, int &nSamples, double * &input_samples)
+double *extractSignal(string filename, int &n, int &nSamples, double *&input_samples)
 {
   ifstream f(filename);
 
-  if(f.good())
+  if (f.good())
   {
     string line;
     vector<double> v;
@@ -122,50 +122,49 @@ double * extractSignal (string filename, int &n, int &nSamples, double * &input_
     nSamples = 0;
     n = 0;
 
-    if(getline(f,line))
+    if (getline(f, line))
     {
-      stringstream s(line); 
+      stringstream s(line);
 
-      if(!(s >> n))
+      if (!(s >> n))
       {
         s.clear();
         s.str(line);
 
-        while(s >> number)
+        while (s >> number)
         {
-          v.push_back(number); 
+          v.push_back(number);
           nSamples++;
         }
       }
-      else 
+      else
       {
-        while(s >> number)
+        while (s >> number)
         {
-          v.push_back(number); 
+          v.push_back(number);
           nSamples++;
         }
       }
     }
 
-    while(getline(f,line))
+    while (getline(f, line))
     {
-      stringstream s(line); 
+      stringstream s(line);
 
-      while(s >> number)
+      while (s >> number)
       {
-        v.push_back(number); 
-        nSamples++; 
+        v.push_back(number);
+        nSamples++;
       }
     }
 
-    //putting into array
-    if(v.size() !=0)
+    if (v.size() != 0)
     {
-      input_samples = new double [nSamples];
+      input_samples = new double[nSamples];
 
-      for(int i=0; i<nSamples; i++)
+      for (int i = 0; i < nSamples; i++)
         input_samples[i] = v[i];
-      
+
       return input_samples;
     }
     else
@@ -174,6 +173,7 @@ double * extractSignal (string filename, int &n, int &nSamples, double * &input_
       return NULL;
     }
   }
+
   cout << "\nERROR: \"" << filename << "\" not accessible" << endl;
   return NULL;
 }
