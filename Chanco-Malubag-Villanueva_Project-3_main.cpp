@@ -90,40 +90,34 @@ int main(int argc, char *argv[])
                << "  exit               - terminates the program\n";
         }
         else if (command == "system")
+{
+    if (!(ss >> filename))
+        cout << "\nERROR: No filename has been specified.\n";
+    else
+    {
+        if (extractSystem(filename, nNonRecursiveCoefs, nRecursiveCoefs, acoef, bcoef) == NULL)
         {
-          if (!(ss >> filename))
-            cout << "\nERROR: No filename has been specified.\n";
-          else
-          {
-            if (extractSystem(filename, nNonRecursiveCoefs, nRecursiveCoefs, acoef, bcoef) == NULL)
-            {
-              cout << "\nSystem obtained from \"" << filename << "\"."
-                   << " recursive coefs: " << nRecursiveCoefs << ","
-                   << " nonrecursive coefs: " << nNonRecursiveCoefs << endl;
-
-              delete[] inputs;
-              delete[] outputs;
-              delete[] input_samples;
-              delete[] output_samples;
-
-              inputs = new double[nNonRecursiveCoefs];
-              outputs = new double[nRecursiveCoefs];
-              input_samples = new double[nSamples];
-              output_samples = new double[nSamples];
-            }
-          }
+            cout << "\nSystem obtained from \"" << filename << "\"."
+                << " recursive coefs: " << nRecursiveCoefs << ","
+                << " nonrecursive coefs: " << nNonRecursiveCoefs << endl;
+            delete[] inputs;
+            delete[] outputs;
+            delete[] input_samples;
+            delete[] output_samples;
+            inputs = new double[nNonRecursiveCoefs]();
+            outputs = new double[nRecursiveCoefs]();
+            // No need to initialize input_samples/output_samples here
         }
+    }
+}
         else if (command == "signal")
-        {
-          if (!(ss >> filename))
-            cout << "\nERROR: No filename has been specified.\n";
-          else
-          {
-            if (acoef == NULL || bcoef == NULL)
-            {
-              cout << "\nERROR: No LTI system has been defined yet.\n";
-            }
-            else if (extractSignal(filename, n, nSamples, input_samples) != NULL)
+{
+
+    if (!(ss >> filename))
+        cout << "\nERROR: No filename has been specified.\n";
+    else if (acoef == NULL || bcoef == NULL)
+        cout << "\nERROR: No LTI system has been defined yet.\n";
+    else if (extractSignal(filename, n, nSamples, input_samples) != NULL)
             {
               cout << "\nSignal obtained from \"" << filename << "\"."
                    << " start index: " << n << ","
@@ -141,8 +135,7 @@ int main(int argc, char *argv[])
                 }
               }
             }
-          }
-        }
+}
         else if (command == "clear")
         {
           delete[] acoef;
