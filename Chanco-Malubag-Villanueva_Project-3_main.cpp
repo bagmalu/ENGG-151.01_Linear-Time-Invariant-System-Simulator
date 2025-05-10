@@ -117,11 +117,13 @@ int main(int argc, char *argv[])
                 logFile << "\nnew system\n";
                 logFile << nNonRecursiveCoefs << endl;
                 logFile << nRecursiveCoefs << endl;
-                for (int i = 0; i < nNonRecursiveCoefs; i++)
+                for (int i = 0; i < nNonRecursiveCoefs; i++) {
                   logFile << bcoef[i] << endl;
-                  for (int i = 0; i < nRecursiveCoefs; i++)
+                }
+                for (int i = 0; i < nRecursiveCoefs; i++) {
                   logFile << acoef[i] << endl;
-                  logFile << "ready\n\n";
+                }
+                logFile << "ready\n\n";
               }
 
               delete[] inputs;
