@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
   ofstream logFile("ltisim-log.txt", ios::app);
   if (!logFile.is_open())
   {
-    cout << "\nERROR: Unable to open log file \"ltisim-log.txt\" for logging.\n";
+    cout << "\nERROR: Unable to open log file \"ltisim-log.txt\"\n";
   }
 
   string userInput, command, filename;
@@ -44,7 +44,8 @@ int main(int argc, char *argv[])
   {
     cout << "\nltisim> ";
     getline(cin, userInput);
-    transform(userInput.begin(), userInput.end(), userInput.begin(), ::tolower);
+    transform(userInput.begin(), userInput.end(), 
+    userInput.begin(), ::tolower);
 
     stringstream ss(userInput);
 
@@ -79,7 +80,8 @@ int main(int argc, char *argv[])
       }
         else
         {
-          cout << "\nERROR: Floating point number contains extra characters.\n";
+          cout << "\nERROR: Floating point number contains extra " 
+          << "characters.\n";
         }
         }
     else
@@ -93,10 +95,13 @@ int main(int argc, char *argv[])
         {
         cout << "\nCommands:\n"
         << "  help               - displays this message\n"
-        << "  system <filename>  - extracts input coefficients from a file \n"
+        << "  system <filename>  - extracts input coefficients from"
+        << " a file\n"
         << "  <number>           - inputs number to the system\n"
-        << "  signal <filename>  - extracts an input signal from a file\n"
-        << "  clear              - clears all memory and restarts simulation\n"
+        << "  signal <filename>  - extracts an input signal from "
+        << "a file\n"
+        << "  clear              - clears all memory and restarts "
+        << "simulation\n"
         << "  exit               - terminates the program\n";
         }
         else if (command == "system")
@@ -110,7 +115,8 @@ int main(int argc, char *argv[])
             {
               cout << "\nSystem obtained from \"" << filename << "\"."
               << " recursive coefs: " << nRecursiveCoefs << ","
-              << " nonrecursive coefs: " << nNonRecursiveCoefs << endl;
+              << " nonrecursive coefs: " << nNonRecursiveCoefs 
+              << endl;
 
               if (logFile.is_open())
               {
@@ -141,7 +147,8 @@ int main(int argc, char *argv[])
           cout << "\nERROR: No filename has been specified.\n";
           else if (acoef == NULL || bcoef == NULL)
           cout << "\nERROR: No LTI system has been defined yet.\n";
-          else if (extractSignal(filename, n, nSamples, input_samples) != NULL)
+          else if (extractSignal(filename, 
+            n, nSamples, input_samples)!=NULL)
           {
             cout << "\nSignal obtained from \"" << filename << "\"."
             << " start index: " << n << ","
@@ -157,13 +164,15 @@ int main(int argc, char *argv[])
             {
               for (int i = 0; i < nSamples; i++)
               {
-                logFile << input_samples[i] << "\t" << output_samples[i] << endl;
+                logFile << input_samples[i] << "\t" << output_samples[i] 
+                << endl;
               }
             }
 
             if (nSamples < 10)
               for (int i = 0; i < nSamples; i++)
-              cout << input_samples[i] << "\t" << output_samples[i] << endl;
+              cout << input_samples[i] << "\t" << output_samples[i] 
+              << endl;
           }
         }
         else if (command == "clear")
@@ -191,7 +200,8 @@ int main(int argc, char *argv[])
         }
         else
         {
-          cout << "\nERROR: Command \"" << command << "\" does not exist.\n";
+          cout << "\nERROR: Command \"" << command << 
+          "\" does not exist.\n";
         }
       }
     }
